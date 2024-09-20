@@ -1,10 +1,16 @@
-import './App.css';
+
+import React from 'react';
+import Signup from './sreenPages/Signup';
+// import Login from './sreenPages/Login';
 
 function App() {
   return (
-   <>
-   <h1>HOME PAGE</h1>
-   </>
+
+    <>
+    <Signup/>
+
+    </>
+    
   );
 }
 
