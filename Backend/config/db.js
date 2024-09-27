@@ -4,7 +4,7 @@ require('dotenv').config();
 // Replace this with your MongoDB Atlas connection string
 // const uri = process.env.DBURI;
 
-const uri = "mongodb+srv://abhinavtyagi0502:abhinav@cluster0.5ma9e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const uri =process.env.URI
 
 async function connectToMongoDB() {
     try {
