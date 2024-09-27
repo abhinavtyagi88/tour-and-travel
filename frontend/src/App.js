@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-// import Home from './sreenPages/Home'
+import {Routes,Route} from "react-router-dom";
+import Home from './sreenPages/Home'
 import SignUp from './sreenPages/SignUp'
 // import Login from './sreenPages/Login';
 function App() {
@@ -11,9 +12,15 @@ function App() {
 
   return (
     <>
-        {/* <Home/> */}
-        {/* <Login/> */}
-        <SignUp/>
+      <Routes>
+        {/* <Route exact path="/" element={<NewsComponent  />}></Route> */}
+        <Route exact path="/" element={<Home/>}></Route>
+
+        <Route exact path="/signup" element={<SignUp/>}></Route>
+
+    
+  
+      </Routes>
     </>
   );
 };

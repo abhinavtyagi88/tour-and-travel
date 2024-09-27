@@ -57,13 +57,13 @@ function Navbar() {
                 <span className="nav_logo-name">BBBootstrap</span>
               </Link>
               <div className="nav_list">
-                <Link to="/dashboard" className="nav_link active">
+                <Link to="/" className="nav_link active">
                   <i className="bx bx-grid-alt nav_icon"></i>
-                  <span className="nav_name">Dashboard</span>
+                  <span className="nav_name">Home</span>
                 </Link>
-                <Link to="/users" className="nav_link">
+                <Link to="/locations" className="nav_link">
                   <i className="bx bx-user nav_icon"></i>
-                  <span className="nav_name">Users</span>
+                  <span className="nav_name">Location</span>
                 </Link>
                 <Link to="/messages" className="nav_link">
                   <i className="bx bx-message-square-detail nav_icon"></i>
