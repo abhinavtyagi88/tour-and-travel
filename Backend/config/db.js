@@ -13,15 +13,12 @@ async function connectToMongoDB() {
 
         console.log("CONNECTED");
 
-        const location = await mongoose.connection.db.collection("locations").find({}).toArray();
-        const India = await mongoose.connection.db.collection("India").find({}).toArray();
-
-        global.location=location;
-        global.india = India;
+        // Fetch  data from the collection
+        const user = await mongoose.connection.db.collection("users").find({}).toArray();
         
-        console.log(India[0].places[0]);
 
-
+        global.food_items = user;
+        // console.log(user);
 
     } catch (error) {
         console.error("Error connecting to MongoDB Atlas", error);
