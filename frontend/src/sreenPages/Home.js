@@ -10,7 +10,9 @@ function Home() {
   return (
     <>
       <Navbar/>
+      <div>
         <h1>HOMEPAGE!!</h1>
+      </div>
     </>
   )
 }

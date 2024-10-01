@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import {Routes,Route} from "react-router-dom";
 import Home from './sreenPages/Home'
-import SignUp from './sreenPages/SignUp'
-import TouristPlaces from './components/TouristPlaces';
-import LoginPage from './sreenPages/Login';
-// import Login from './sreenPages/Login';
+import SignUp from './sreenPages/Signup'
+import Profile from './sreenPages/Profile'
+import Location from './sreenPages/TouristPlaces';
+
+import Login from './sreenPages/Login';
 function App() {
   // const { loginWithPopup, user, isAuthenticated, isLoading, logout } = useAuth0();
 
@@ -15,11 +16,17 @@ function App() {
   return (
     <>
       <Routes>
+        {/* <Route exact path="/" element={<NewsComponent  />}></Route> */}
         <Route exact path="/" element={<Home/>}></Route>
-        <Route exact path="/touristPlace" element={<TouristPlaces/>}></Route>
-        <Route exact path="/signup" element={<SignUp/>}></Route>
-        <Route exact path="/login" element={<LoginPage/>}></Route>
+        <Route exact path="/profile" element={<Profile/>}></Route>
+        <Route exact path="/locations" element={<Location/>}></Route>
 
+
+
+        <Route exact path="/signup" element={<SignUp/>}></Route>
+
+    
+  
       </Routes>
     </>
   );

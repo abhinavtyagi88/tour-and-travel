@@ -33,22 +33,18 @@ function Navbar() {
 
   return (
     <>
-        <div className="header " style={{background:"linear-gradient(90deg, #485563, #29323c 100%)"}} id="header">
-          <div className="header_toggle d-flex ">
-            <i className="bx bx-menu me-6" id="header-toggle">icon</i>
+        <div className="header" id="header">
+          <div className="header_toggle d-flex">
+            <i className="bx bx-menu me-5" id="header-toggle">icon</i>
             <input className="form-control me-2 w-75 bg-white text-dark" type="search" placeholder="Search in here..." aria-label="Search"  />
             <button className="btn text-white bg-danger" >X</button>
 
           </div>
-          <div className="me-6 d-flex">  
-                <Link to="/login" className="btn text-white bg-danger me-2">Login</Link>
-                <Link to="/signup" className="btn text-white bg-danger me-2">SignUp</Link>
-
-          </div>
-          {/* <div className='login_signin'>
+          {/* <div className="d-flex ">  
+                <input className="form-control me-2 w-75 bg-white text-dark" type="search" placeholder="Search in here..." aria-label="Search"  />
+                <button className="btn text-white bg-danger" >X</button>
           </div> */}
           <div className="header_img">
-            
             <img src="https://i.imgur.com/hczKIze.jpg" alt="profile" />
           </div>
         </div>
@@ -65,9 +61,9 @@ function Navbar() {
                   <i className="bx bx-grid-alt nav_icon"></i>
                   <span className="nav_name">Home</span>
                 </Link>
-                <Link to="/touristPlace" className="nav_link">
+                <Link to="/locations" className="nav_link">
                   <i className="bx bx-user nav_icon"></i>
-                  <span className="nav_name">TouristPlace</span>
+                  <span className="nav_name">Location</span>
                 </Link>
                 <Link to="/messages" className="nav_link">
                   <i className="bx bx-message-square-detail nav_icon"></i>
