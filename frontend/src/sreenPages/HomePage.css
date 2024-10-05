@@ -1,0 +1,24 @@
+*{
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+.profile{
+    border-radius: 50%;
+    width:7vw;
+    height: 5vh;
+}
+
+.post-profile-text{
+    line-height: 0.5;
+    font-size: 1vw;
+}
+
+.post-img{
+    width: 100%;
+}
+
+.post-reaction{
+    width: 100%;
+}
