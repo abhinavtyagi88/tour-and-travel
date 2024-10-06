@@ -16,6 +16,7 @@ function App() {
   return (
     <>
       <Routes>
+
         <Route exact path="/" element={<Home/>}></Route>
         <Route exact path="/profile" element={<Profile/>}></Route>
         <Route exact path="/locations" element={<Location/>}></Route>

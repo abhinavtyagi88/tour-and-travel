@@ -14,6 +14,8 @@ app.use(express.json());
 // Routes
 app.use('/api', require('./Routers/route'));
 app.use('/api', require('./Routers/touristPlaceRoute'));
+app.use('/api', require('./Routers/posts'));
+
 
 
 app.listen(port, () => {
