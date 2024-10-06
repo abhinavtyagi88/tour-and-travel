@@ -1,0 +1,13 @@
+{
+    "place": {
+      "country": "USA",
+      "placeName": "Grand Canyon"
+    },
+    "caption": "Breathtaking view of the Grand Canyon!",
+    "images": [
+      "https://example.com/image1.jpg",
+      "https://example.com/image2.jpg"
+    ],
+    "userId": "6700dd5505dfae661d3b4ad4" 
+  }
+  
