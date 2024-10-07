@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const VisitedPlace = require('../models/VisitedPlace');
+const VisitedPlace = require('../models/VisitedModel');
 
 // Add a visited place
 router.post('/add', async (req, res) => {
