@@ -97,6 +97,6 @@ format--
 Github Username
 -and your commit in single line
 
-- Nadja Probst: https://github.com/nadjascodejourney
+- Serhii Korneliuk: https://github.com/Seiger
 
 --
