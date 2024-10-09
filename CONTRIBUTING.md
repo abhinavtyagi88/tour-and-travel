@@ -14,9 +14,11 @@ Welcome to our project! We appreciate your interest and contributions. Please re
 ## Getting Started 🤩🤗
 
 1. **Fork the Repository:**
+
    - Use the fork button at the top right of the repository page.
 
 2. **Clone Your Fork:**
+
    - Clone the forked repository to your local machine.
 
    ```bash
@@ -25,8 +27,6 @@ Welcome to our project! We appreciate your interest and contributions. Please re
 
 3. **Navigate to the Project Directory:**
 
-   
-
 4. **Create a New Branch:**
 
    ```bash
@@ -34,6 +34,7 @@ Welcome to our project! We appreciate your interest and contributions. Please re
    ```
 
 5. **Make Your Changes:**
+
    - Add your name to `contributors/contributorsList.js` and make any other contributions.
 
    ```bash
@@ -81,10 +82,11 @@ To keep your fork up-to-date with the main repository and avoid conflicts:
    This will pull in changes from the parent repository and help you resolve any conflicts.
 
 4. **Keep Updated:**
+
    - Regularly pull changes from the upstream repository to keep your fork updated.
 
-
 5. **Add your name to this file before pull request**
+
 -
 
 We look forward to your contributions and thank you for being a part of our community!
@@ -95,5 +97,6 @@ format--
 Github Username
 -and your commit in single line
 
---
+- Nadja Probst: https://github.com/nadjascodejourney
 
+--
