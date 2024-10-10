@@ -34,7 +34,7 @@ Welcome to our project! We appreciate your interest and contributions. Please re
    ```
 
 5. **Make Your Changes:**
-   - Add your name to `contributors/contributorsList.js` and make any other contributions.
+   - Add your name in **CONTRIBUTORS LIST:** that is mentioned below.
 
    ```bash
    git add .

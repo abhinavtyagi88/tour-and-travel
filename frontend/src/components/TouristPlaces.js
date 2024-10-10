@@ -10,7 +10,7 @@ const TouristPlaces = () => {
     // Fetch data from the API
     const fetchTouristPlaces = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/touristPlace/:India');
+        const response = await fetch('http://localhost:4000/api/touristPlace/India');
         if (!response.ok) {
           throw new Error('Failed to fetch');
         }
@@ -38,7 +38,6 @@ const TouristPlaces = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Render the places
   return (
     <>
     <Navbar/>

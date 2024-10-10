@@ -70,7 +70,7 @@ function Signup() {
 
   return (
     <>
-    <Navbar/>
+    {/* <Navbar/> */}
     <section className="h-100 bg-dark">
       <div className="container  h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
