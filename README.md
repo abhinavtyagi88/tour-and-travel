@@ -1,5 +1,3 @@
-Here's a cleaned-up and better-formatted version of your README file that should render correctly in Markdown:
-
 ```markdown
 # 🌍 Tour and Travel Project
 
