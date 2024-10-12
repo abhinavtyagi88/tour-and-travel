@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import "./Login.css";
+import {FaUser, FaLock} from "react-icons/fa";
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -31,30 +32,31 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container card container p-5 d-grid justify-content-center w-25">
-      <h2>Login</h2>
-      <form className="form-group" onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          className="form-control mb-3"
-          id="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          className="form-control mb-3"
-          id="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && <p className="text-danger">{error}</p>}
-        <button type="submit" className="btn btn-primary w-100">Login</button>
+    <div className='background'>
+    <div className='wrapper'>
+      <form action="">
+        <h1>Login</h1>
+        <div className='input-box'>
+          <input type="text" placeholder='username' required/>
+          <FaUser className='icon'/>
+
+        </div>
+        <div className='input-box'>
+        <input type="password" placeholder='Password' required/>
+        <FaLock className='icon'/>
+        </div>
+
+        <div className='remember-forgot'>
+          <label><input type="checkbox"/>Remember me </label>
+          <a href='#'>Forgot password?</a>
+        </div>
+
+        <button type="submit">Login</button>
+        <div className='register-link'>
+          <p>Don't have an account? <a href='#'>Register</a> </p>
+        </div>
       </form>
+    </div>
     </div>
   );
 };
