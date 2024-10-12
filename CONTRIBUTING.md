@@ -103,6 +103,6 @@ Github Username
 
 - Nadja Probst: https://github.com/nadjascodejourney
 
--manjit-hub :https://github.com/manjit-hub
+- manjit-hub :https://github.com/manjit-hub
 
 --

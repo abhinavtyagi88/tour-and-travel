@@ -1,33 +1,99 @@
-/* Modal Content Animation */
-modal{
-  border: 0.5rem outset pink;
-}
-.modal-content-animate {
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.3s ease-in-out;
+/* General styling */
+.container {
+  margin-top: 2rem;
 }
 
-.modal-content-animate--after-open {
+/* Button Styling */
+.btn {
+  color: white;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #218838;
+}
+
+.btn:focus {
+  outline: 2px solid #218838;
+  outline-offset: 2px;
+}
+
+/* Input Styling */
+input, textarea, select {
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Modal Styling */
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+.ReactModal__Content {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ReactModal__Content--after-open {
   opacity: 1;
   transform: scale(1);
 }
 
-.modal-content-animate--before-close {
+.ReactModal__Content--before-close {
   opacity: 0;
   transform: scale(0.8);
 }
 
-/* Modal Overlay Animation */
-.modal-overlay-animate {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+/* Specific Modal Styling */
+.modal-header {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.modal-overlay-animate--after-open {
-  opacity: 1;
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
 }
 
-.modal-overlay-animate--before-close {
-  opacity: 0;
+.modal-footer button {
+  margin-left: 1rem;
 }
+
+/* Team Container */
+.teams-container {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  min-height: 35vh;
+}
+
+/* General Section Styling */
+.section-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+

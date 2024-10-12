@@ -13,7 +13,7 @@ const customStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     width: '40%',          // Adjust width as needed
-    height: '50vh',      // Set a specific height
+    height: '53vh',      // Set a specific height
     overflow: 'hidden',    // Prevent scrollbars
   },
 };
@@ -105,12 +105,15 @@ const handleJoinTeam = async () => {
   return (
     <>
       {/* <Navbar /> */}
-      <div className="container row">
+      <div className="container" style={{width:"85vw",height:"90vh"
+      }}>
+      <div className="row flex justify-content-between">
+        
         <div
-          className="col-4 p-3 d-grid justify-content-center bg-secondary rounded-2"
+          className="col-4 m-2 d-grid  bg-secondary rounded-2"
           style={{ height: "35vh" }}
         >
-          <div className="row  d-flex justify-content-between rounded-2">
+          <div className="row m-1 d-flex justify-content-between rounded-2">
             {/* Create Button */}
             <div
               className="col-3 m-1 btn rounded-2"
@@ -140,7 +143,7 @@ const handleJoinTeam = async () => {
             onChange={(e) => setTeamId(e.target.value)}  // Set the team ID for joining
           />
           <br />
-          <div className="row  d-flex justify-content-between rounded-2">
+          <div className="row m-1 d-flex justify-content-between rounded-2">
             <div
               className="col-3 m-1 btn rounded-2"
               style={{ backgroundColor: green }}
@@ -163,7 +166,7 @@ const handleJoinTeam = async () => {
           </div>
         </div>
         <div
-          className="col-6 bg-secondary container"
+          className="col-7 bg-secondary m-3"
           style={{ height: "35vh" }}
         >
           <h3 className="text-center">Teams</h3>
@@ -219,7 +222,7 @@ const handleJoinTeam = async () => {
     </div>
   </form>
 </Modal>
-
+</div>
     </>
   );
 }
