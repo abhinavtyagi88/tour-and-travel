@@ -94,6 +94,7 @@ To keep your fork up-to-date with the main repository and avoid conflicts:
 -
 
 We look forward to your contributions and thank you for being a part of our community!
+Happy Contribution
 
 **CONTRIBUTORS LIST**
 
