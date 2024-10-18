@@ -26,8 +26,57 @@ function Signup() {
     });
   };
 
+  const validation = () => {
+    const nameRegex = /^[a-zA-Z]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+  
+    // Validate first and last name
+    if (!formData.firstName || !nameRegex.test(formData.firstName)) {
+      alert("First name can't be empty and must contain only letters.");
+      return false;
+    }
+    if (!formData.lastName || !nameRegex.test(formData.lastName)) {
+      alert("Last name can't be empty and must contain only letters.");
+      return false;
+    }
+  
+    // Validate email
+    if (!emailRegex.test(formData.email)) {
+      alert("Invalid email format.");
+      return false;
+    }
+  
+    // Validate password
+    if (!passwordRegex.test(formData.password)) {
+      alert("Password must be at least 8 characters long, include a number, an uppercase and a lowercase letter.");
+      return false;
+    }
+  
+    // Validate date of birth
+    const dobDate = new Date(formData.dob);
+    const today = new Date();
+    if (isNaN(dobDate) || dobDate >= today) {
+      alert("Date of birth must be a past date.");
+      return false;
+    }
+  
+    // Validate budget
+    if (isNaN(formData.budget) || formData.budget <= 0) {
+      alert("Budget must be a positive number.");
+      return false;
+    }
+  
+    return true;
+  };
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if(!validation()){
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:4000/api/signup', {
