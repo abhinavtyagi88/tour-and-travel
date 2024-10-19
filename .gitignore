@@ -1,0 +1,47 @@
+# Node modules for both frontend and Backend
+frontend/node_modules
+Backend/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build directory for frontend (React)
+frontend/build/
+frontend/dist/
+
+# Temporary build files
+frontend/.next/
+frontend/.nuxt/
+
+# React cache
+frontend/.cache/
+frontend/.eslintcache/
+
+# Production files
+frontend/.env.production
+Backend/.env.production
+
+# Local environment files
+frontend/.env.local
+Backend/.env.local
+
+# Optional npm cache directory
+frontend/.npm/
+Backend/.npm/
+
+# IDE specific files
+.vscode/
+.idea/
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
