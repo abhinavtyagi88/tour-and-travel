@@ -51,6 +51,17 @@ The backend contains various folders for organizing the code:
 
 To get started with the project locally, follow these steps:
 
+### Setup
+
+On a UNIX system, run the following commands:
+
+```bash
+   chmod +x setup.sh
+   ./setup.sh
+```
+
+## Alternate Setup Process:
+
 ### 🖥️ Frontend Setup
 1. Navigate to the `frontend` directory:
    ```bash
