@@ -6,6 +6,7 @@ import NotFound from "./screenPages/NotFound";
 import Location from "./screenPages/Location";
 import Signup from "./screenPages/Signup";
 import Login from "./screenPages/Login";
+import Layout from "../../layout/Layout";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -36,7 +37,9 @@ const Router = () => {
 
   return (
     <div>
-      <RouterProvider router={router} />
+      <RouterProvider router={router}>
+        <Layout />
+      </RouterProvider>
     </div>
   );
 };
