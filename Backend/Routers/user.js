@@ -82,31 +82,13 @@ router.post('/login', async (req, res) => {
 });
 
 
-// Get user details route (Protected)
-router.get('/me', authMiddleware, async (req, res) => {
-    try {
-        const userInstance = await User.findById(req.user.userId).select('-password'); // Exclude password from response
-        if (!userInstance) return res.status(404).json({ error: 'User not found' });
-        res.status(200).json(userInstance);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to fetch user details', details: error.message });
-    }
-});
+
 
 // Update user details route (Protected)
-router.put('/me', authMiddleware, async (req, res) => {
-    const updates = req.body;
-
-    try {
-        const userInstance = await User.findByIdAndUpdate(req.user.userId, updates, { new: true }).select('-password'); // Exclude password from response
-        if (!userInstance) return res.status(404).json({ error: 'User not found' });
-        res.status(200).json(userInstance);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to update user details', details: error.message });
-    }
+router.put('/me', authMiddleware, (req, res) => {
+    res.status(200).json({ message: "Middleware is working!", user: req.user });
 });
+
 
 // Export the router
 module.exports = router;

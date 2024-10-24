@@ -4,7 +4,7 @@ import Home from './sreenPages/Home';
 import Signup from './sreenPages/Signup';
 import Profile from './sreenPages/Profile';
 import Location from './sreenPages/TouristPlaces';
-import Login from './sreenPages/Login';
+import Login from './sreenPages/sign/Login';
 import './Navbar.css'; // Import your CSS file for Navbar styles
 
 function App() {

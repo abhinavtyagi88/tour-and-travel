@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/postModel');
 const User = require('../models/user');
+const authMiddleware = require('../middleware/authMiddleware');
+
 
 // Create a new post
-router.post('/create', async (req, res) => {
+router.post('/create', authMiddleware, async (req, res) => {
   try {
     const { place, caption, images, userId } = req.body;
 

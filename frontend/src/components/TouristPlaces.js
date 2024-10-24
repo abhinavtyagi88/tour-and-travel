@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from './Navbar';
 
 const TouristPlaces = () => {
   const [places, setPlaces] = useState([]);
@@ -40,7 +39,6 @@ const TouristPlaces = () => {
 
   return (
     <>
-    <Navbar/>
     <div>
       <h1>Tourist Places in India</h1>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>

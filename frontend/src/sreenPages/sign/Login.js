@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,Link} from 'react-router-dom';
 import "./Login.css";
 import { FaUser, FaLock } from "react-icons/fa";
 
@@ -24,6 +24,12 @@ const Login = () => {
       
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userEmail', email);
+        console.log(localStorage.getItem('userEmail'));
+        console.log(data);
+        
+        
+
         console.log(data.token);
         
         navigate('/');  // Navigate to homepage
@@ -67,7 +73,7 @@ const Login = () => {
 
           <div className='remember-forgot'>
             <label><input type="checkbox"/>Remember me </label>
-            <a href='#'>Forgot password?</a>
+            <Link href='/'>Forgot password?</Link>
           </div>
 
           <button type="submit">Login</button>  {/* Submit button */}

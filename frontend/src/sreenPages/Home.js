@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from 'react-modal';
 import "./Home.css";
-import Navbar from "../components/Navbar";
+
 
 // Custom modal styles
 const customStyles = {
@@ -104,19 +104,19 @@ const handleJoinTeam = async () => {
 
   return (
     <>
-      {/* <Navbar /> */}
+      
       <div className="container" style={{width:"85vw",height:"90vh"
       }}>
       <div className="row flex justify-content-between">
         
         <div
           className="col-4 m-2 d-grid  bg-secondary rounded-2"
-          style={{ height: "35vh" }}
+          style={{ height: "44vh" }}
         >
           <div className="row m-1 d-flex justify-content-between rounded-2">
             {/* Create Button */}
             <div
-              className="col-3 m-1 btn rounded-2"
+              className="col-3 m-1 btn rounded-2" 
               style={{ backgroundColor: green }}
               onClick={openModal}  // Open modal on click
             >
@@ -136,7 +136,7 @@ const handleJoinTeam = async () => {
           <input
             type="text"
             name="TeamId"
-            className="row rounded-2"
+            className="row rounded-2 m-2"
             placeholder="Enter Team ID"
             style={{ width: "22vw" }}
             value={teamId}
@@ -159,7 +159,7 @@ const handleJoinTeam = async () => {
           </div>
           <br />
           <div
-            className="row justify-content-center btn rounded-2 w-25"
+            className="row btn rounded-2 w-25 m-2"
             style={{ backgroundColor: green }}
           >
             Search
@@ -179,10 +179,10 @@ const handleJoinTeam = async () => {
   onRequestClose={closeModal}
   style={customStyles}
 >
-  <h2 className="text-center">Create Team</h2>
+  <h2 className="text-center">Create Group</h2>
   <form onSubmit={handleCreateTeam} className="p-3">  
     <div className="mb-3">
-      <label htmlFor="teamName" className="form-label">Team Name:</label>
+      <label htmlFor="teamName" className="form-label">Group Name:</label>
       <input
         type="text"
         id="teamName"
@@ -217,7 +217,7 @@ const handleJoinTeam = async () => {
     </div>
     
     <div className="d-flex justify-content-between">
-      <button type="submit" className="btn btn-success">Create Team</button>
+      <button type="submit" className="btn btn-success">Create Group</button>
       <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
     </div>
   </form>

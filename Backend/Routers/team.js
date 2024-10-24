@@ -34,7 +34,8 @@ router.post('/team', async (req, res) => {
     // Return the created team with the join code
     res.status(201).json({
       team: newTeam,
-      joinCode: newTeam.joinCode // Include the join code in the response
+      joinCode: newTeam.joinCode, // Include the join code in the response
+      user: req.user 
     });
   } catch (error) {
     res.status(400).json({ message: error.message }); // Handle errors
