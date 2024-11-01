@@ -16,8 +16,6 @@ async function connectToMongoDB() {
         console.log(India[0].places[0]);
 
         
-
-
     } catch (error) {
         console.error("Error connecting to MongoDB Atlas", error);
     }

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Guide = require('../models/localGuide'); // Assuming the guide schema is in models folder
-
+const middleware = require('../middleware/authMiddleware');
 
 // Create a new guide
-router.post('/guides', async (req, res) => {
+router.post('/guides',async (req, res) => {
   try {
     const newGuide = new Guide(req.body);
     await newGuide.save();

@@ -7,23 +7,28 @@ const TouristPlaces = () => {
 
   useEffect(() => {
     // Fetch data from the API
+    const token =localStorage.getItem('token'); 
     const fetchTouristPlaces = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/touristPlace/India');
-        if (!response.ok) {
-          throw new Error('Failed to fetch');
-        }
-        const data = await response.json();
-        
-        console.log(data[0][0].places);
-        setPlaces(data[0][0].places)
-        setLoading(false);
+          const response = await fetch('http://localhost:4000/api/touristPlace/India', {
+              headers: {
+                  'Authorization': token  // Send token directly without 'Bearer'
+              }
+          });
+          if (!response.ok) {
+              throw new Error('Failed to fetch');
+          }
+          const data = await response.json();
+          
+          console.log(data[0][0].places);
+          setPlaces(data[0][0].places);
+          setLoading(false);
       } catch (err) {
-        setError(err.message);
-        setLoading(false);
+          setError(err.message);
+          setLoading(false);
       }
-    };
-
+  };
+  
     fetchTouristPlaces();
   }, []);
 

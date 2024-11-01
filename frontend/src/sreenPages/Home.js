@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import Modal from 'react-modal';
 import "./Home.css";
+import Group from "../components/Group";
 
 
 // Custom modal styles
@@ -20,8 +21,11 @@ const customStyles = {
 
 Modal.setAppElement('#root');  // Update this according to your root element ID
 
-function Home() {
+function Home(props) {
   const green = "#28a745";
+
+  console.log(props);
+  
   
   const [modalIsOpen, setIsOpen] = useState(false);  // Modal state
   const [teamName, setTeamName] = useState('');  // State for team name
@@ -42,6 +46,7 @@ function Home() {
   const handleCreateTeam = async (e) => {
     e.preventDefault();  // Prevent page reload
     try {
+      
       const response = await fetch('http://localhost:4000/api/team', {
         method: 'POST',
         headers: {
@@ -50,7 +55,7 @@ function Home() {
         body: JSON.stringify({
           teamName,
           description: teamDescription,
-          createdBy: '6700db6205dfae661d3b4ad2',  // Replace with actual user ID
+          createdBy: props.id,  // Replace with actual user ID
           privacy,
         }),
       });
@@ -83,11 +88,13 @@ const handleJoinTeam = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: '6700db6205dfae661d3b4ad2',  // Replace with actual user ID
+        userId: props.id,  // Replace with actual user ID
         joinCode: teamId, // Use join code instead of team ID
       }),
     });
 
+    console.log(props.id || " not defined");
+    
     const result = await response.json();
     if (response.status === 200) {
       alert(`Successfully joined team!`);
@@ -100,6 +107,51 @@ const handleJoinTeam = async () => {
     alert('An error occurred while trying to join the team.');
   }
 };
+
+//shuffleArray
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
+const [groups, setGroups] = useState([]); // Changed `Group` to `groups`
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+  // Fetch data from the API
+  const fetchTouristGroups = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/teams');
+      if (!response.ok) {
+        throw new Error('Failed to fetch');
+      }
+      const data = await response.json();
+      
+      console.log(data);
+      setGroups(shuffleArray(data)); // Set the fetched groups
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false); // Set loading to false once done
+    }
+  };
+
+  fetchTouristGroups();
+}, [localStorage]);
+
+// Render loading state
+if (loading) {
+  return <div>Loading...</div>;
+}
+
+// Render error state
+if (error) {
+  return <div>Error: {error}</div>;
+}
 
 
   return (
@@ -115,22 +167,10 @@ const handleJoinTeam = async () => {
         >
           <div className="row m-1 d-flex justify-content-between rounded-2">
             {/* Create Button */}
-            <div
-              className="col-3 m-1 btn rounded-2" 
-              style={{ backgroundColor: green }}
-              onClick={openModal}  // Open modal on click
-            >
-              Create
-            </div>
+           
 
             {/* Join Button */}
-            <div
-              className="col-3 m-1 btn rounded-2"
-              style={{ backgroundColor: green }}
-              onClick={handleJoinTeam}  // Call join function on click
-            >
-              Join
-            </div>
+            
           </div>
           <br />
           <input
@@ -143,18 +183,20 @@ const handleJoinTeam = async () => {
             onChange={(e) => setTeamId(e.target.value)}  // Set the team ID for joining
           />
           <br />
-          <div className="row m-1 d-flex justify-content-between rounded-2">
-            <div
-              className="col-3 m-1 btn rounded-2"
+          <div className="row m-1  rounded-2">
+          <div
+              className="col m-1  btn rounded-2" 
               style={{ backgroundColor: green }}
+              onClick={openModal}  // Open modal on click
             >
-              Guide
+              Create
             </div>
             <div
-              className="col-3 m-1 btn rounded-2"
+              className="col m-1 btn rounded-2"
               style={{ backgroundColor: green }}
+              onClick={handleJoinTeam}  // Call join function on click
             >
-              Buddy
+              Join
             </div>
           </div>
           <br />
@@ -165,11 +207,23 @@ const handleJoinTeam = async () => {
             Search
           </div>
         </div>
+        
         <div
           className="col-7 bg-secondary m-3"
-          style={{ height: "35vh" }}
+          // style={{ height: "35vh" }}
         >
-          <h3 className="text-center">Teams</h3>
+          <h3 className="text-center">Groups</h3>
+          <div className="d-flex row justify-content-center p-2">
+             {/* <Group/>
+             <Group/> */}
+
+           {  groups.map(group => (
+          <Group key={group._id} teamName={group.teamName} desc = {group.description} teamId ={group._id}></Group>
+        ))}
+
+          </div>
+
+          
         </div>
       </div>
 

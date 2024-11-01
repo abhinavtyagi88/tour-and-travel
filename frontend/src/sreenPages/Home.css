@@ -6,12 +6,26 @@
 /* Button Styling */
 .btn {
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.5rem;  /* Define button size */
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 750;
   border: none;
-  transition: background-color 0.3s ease;
+  border-radius: 5px;  /* Rounded corners for a modern look */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  background-color: #007bff; /* Base background color */
 }
+
+/* Hover Effect */
+.btn:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+/* Active State */
+.btn:active {
+  transform: scale(0.98); /* Small press effect */
+}
+
 
 .btn:hover {
   background-color: #218838;

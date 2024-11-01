@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate ,Link} from 'react-router-dom';
 import "./Login.css";
 import { FaUser, FaLock } from "react-icons/fa";
+import { useAuth } from '../../contextAPI/auth';
 
 const Login = () => {
   const navigate = useNavigate();
+  const {storeTokenInLS} = useAuth();
   const [email, setEmail] = useState('');  // Email state
   const [password, setPassword] = useState('');  // Password state
   const [error, setError] = useState('');  // Error state
@@ -20,17 +22,19 @@ const Login = () => {
         body: JSON.stringify({ email, password }),  // Send email and password
       });
       
-      const data = await response.json();
+      const {...data} = await response.json();
       
       if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userEmail', email);
-        console.log(localStorage.getItem('userEmail'));
-        console.log(data);
+        // localStorage.setItem('token', data.token);
+        // localStorage.setItem('userEmail', email);
+        // console.log(localStorage.getItem('userEmail'));
+        // console.log(data);
         
         
 
-        console.log(data.token);
+        // console.log(data.token);
+        storeTokenInLS(data.token,data.user);
+        console.log(data.user);
         
         navigate('/');  // Navigate to homepage
       } else {

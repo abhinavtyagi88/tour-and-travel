@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Routes, Route, NavLink } from "react-router-dom";
+import React, { useState } from 'react';
+import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
 import Home from './sreenPages/Home';
 import Signup from './sreenPages/Signup';
 import Profile from './sreenPages/Profile';
@@ -8,9 +8,21 @@ import Login from './sreenPages/sign/Login';
 import './Navbar.css'; // Import your CSS file for Navbar styles
 
 function App() {
-  useEffect(() => {
-    // Any additional effect logic can go here
-  }, []); 
+  const navigate = useNavigate();
+
+  const getUserFromLS = () => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : {};
+  };
+
+  const [user, setUser] = useState(getUserFromLS());
+
+  const signOut = () => {
+    localStorage.removeItem('token');  // Remove token from localStorage
+    localStorage.removeItem('user'); 
+    setUser({}); // Clear user state
+    navigate('/login');  // Redirect to login page
+  };
 
   return (
     <>
@@ -27,7 +39,10 @@ function App() {
           <button className="btn text-white bg-danger">X</button>
         </div>
         <div className="header_img">
-          <img src="https://i.imgur.com/hczKIze.jpg" alt="profile" />
+          <img 
+            src={user.img || "https://previews.123rf.com/images/kritchanut/kritchanut1407/kritchanut140700335/29898193-male-avatar-profile-picture-vector-icon.jpg"} 
+            alt="profile" 
+          />
         </div>
       </div>
 
@@ -51,26 +66,33 @@ function App() {
                 <i className="bx bx-message-square-detail nav_icon"></i>
                 <span className="nav_name">Profile</span>
               </NavLink>
-              <NavLink to="/signup" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
-                <i className="bx bx-bookmark nav_icon"></i>
-                <span className="nav_name">Sign Up</span>
-              </NavLink>
-              <NavLink to="/login" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
-                <i className="bx bx-folder nav_icon"></i>
-                <span className="nav_name">Login</span>
-              </NavLink>
+              
+              {!localStorage.getItem('token') && (
+                <>
+                  <NavLink to="/signup" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
+                    <i className="bx bx-bookmark nav_icon"></i>
+                    <span className="nav_name">Sign Up</span>
+                  </NavLink>
+                  <NavLink to="/login" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
+                    <i className="bx bx-folder nav_icon"></i>
+                    <span className="nav_name">Login</span>
+                  </NavLink>
+                </>
+              )}
             </div>
           </div>
-          <NavLink to="/signout" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
-            <i className="bx bx-log-out nav_icon"></i>
-            <span className="nav_name">SignOut</span>
-          </NavLink>
+          {localStorage.getItem('token') && (
+            <div className="nav_link" onClick={signOut}>
+              <i className="bx bx-log-out nav_icon"></i>
+              <span className="nav_name">SignOut</span>
+            </div>
+          )}
         </nav>
       </div>
 
       {/* Routes */}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home id = {user.id} />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/locations" element={<Location />} />
         <Route path="/signup" element={<Signup />} />
@@ -78,6 +100,6 @@ function App() {
       </Routes>
     </>
   );
-};
+}
 
 export default App;
