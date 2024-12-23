@@ -15,7 +15,7 @@ app.use(express.json());
 app.use('/api', require('./Routers/user'));
 app.use('/api', require('./Routers/touristPlaceRoute'));
 app.use('/api', require('./Routers/post'));
-app.use('/api', require('./Routers/visited'));
+// app.use('/api', require('./Routers/visited'));
 app.use('/api', require('./Routers/team'));
 app.use('/api', require('./Routers/Localguide'));
 

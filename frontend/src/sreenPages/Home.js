@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from 'react-modal';
-import "./Home.css";
 import Group from "../components/Group";
+import "./Home.css";
 
 const customStyles = {
   content: {
@@ -17,24 +17,9 @@ const customStyles = {
   },
 };
 
-Modal.setAppElement('#root');  // Adjust to your root element ID
+Modal.setAppElement('#root');
 
-function Home(props) {
-
-  const getUserFromLS = () => {
-    const user = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-    
-    try {
-      return user ? JSON.parse(user) : {};
-    } catch (error) {
-      console.error("Invalid user data in localStorage:", error);
-      return {};
-    }
-  };
-
-  const green = "#28a745";
-
+function Home() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [teamDescription, setTeamDescription] = useState('');
@@ -44,41 +29,24 @@ function Home(props) {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : {};
+  });
 
-  function openModal() {
-    setIsOpen(true);
-  }
+  // Modal functions
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  // Handle image change and upload to Cloudinary
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "your_upload_preset");  // Replace with your Cloudinary preset
-
-      try {
-        const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await response.json();
-        setAddImage(data.secure_url); // Store the secure URL for API request
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        alert("Image upload failed.");
-      }
-    }
-  };
-
-  // Handle create team form submission
+  // Handle creating a team
   const handleCreateTeam = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");  // Ensure token is fetched
+    const token = localStorage.getItem("token");
+    if (!user || !user.id) {
+        alert("User is not logged in.");
+        return;
+    }
+
     try {
       const response = await fetch('http://localhost:4000/api/team', {
         method: 'POST',
@@ -89,8 +57,8 @@ function Home(props) {
         body: JSON.stringify({
           teamName,
           description: teamDescription,
-          image_url: addImage,  // Send the image URL to backend
-          createdBy: props.id,  // Replace with actual user ID
+          image_url: addImage,
+          createdBy: user.id,
           privacy,
         }),
       });
@@ -98,24 +66,27 @@ function Home(props) {
       const result = await response.json();
       if (response.status === 201) {
         alert(`Team created successfully! Join code: ${result.joinCode}`);
-        console.log(result);
+        setIsOpen(false);
+        setTeamName('');
+        setTeamDescription('');
+        setAddImage('');
       } else {
         alert('Failed to create team: ' + result.message);
       }
-
-      setIsOpen(false);
-      setTeamName('');
-      setTeamDescription('');
-      setAddImage('');
     } catch (error) {
       console.error('Error creating team:', error);
       alert('An error occurred while creating the team.');
     }
   };
 
-  // Handle join team functionality
+  // Handle joining a team
   const handleJoinTeam = async () => {
     const token = localStorage.getItem("token");
+    if (!joinCode) {
+      alert('Please enter a join code.');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:4000/api/teams/join', {
         method: 'POST',
@@ -124,14 +95,14 @@ function Home(props) {
           'Authorization': token
         },
         body: JSON.stringify({
-          userId: props.id,  // Replace with actual user ID
-          joinCode, // Use joinCode directly
+          userId: user.id,  // User ID
+          joinCode, // Join code entered by the user
         }),
       });
 
       const result = await response.json();
-      if (response.status === 200) {
-        alert(`Successfully joined team!`);
+      if (response.ok) {
+        alert('Successfully joined the team!');
         console.log(result);
       } else {
         alert('Failed to join team: ' + result.message);
@@ -142,24 +113,16 @@ function Home(props) {
     }
   };
 
-  // Shuffle groups array
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-
+  // Fetch groups on component mount
   useEffect(() => {
     const fetchTouristGroups = async () => {
       try {
         const response = await fetch('http://localhost:4000/api/teams');
         if (!response.ok) {
-          throw new Error('Failed to fetch');
+          throw new Error('Failed to fetch groups');
         }
         const data = await response.json();
-        setGroups(shuffleArray(data)); // Shuffle and set fetched groups
+        setGroups(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -168,25 +131,17 @@ function Home(props) {
     };
 
     fetchTouristGroups();
-  }, []); // Fetch data only once on mount
+  }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
       <div className="container" style={{ width: "85vw", height: "90vh" }}>
         <div className="row flex justify-content-between">
-          <div
-            className="col-4 m-2 d-grid bg-secondary rounded-2"
-            style={{ height: "44vh" }}
-          >
-            <br />
+          {/* Team Join Section */}
+          <div className="col-4 m-2 d-grid bg-secondary rounded-2" style={{ height: "44vh" }}>
             <input
               type="text"
               name="JoinCode"
@@ -194,43 +149,33 @@ function Home(props) {
               placeholder="Enter Join Code"
               style={{ width: "22vw" }}
               value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value)}  // Set the join code for joining
+              onChange={(e) => setJoinCode(e.target.value)} 
             />
-            <br />
-            <div className="row m-1 rounded-2">
-              <button
-              className="btn btn-primary btn-sm m-1"
-                onClick={openModal}
-                aria-label="Create a new group"
-              >
-                Create
-              </button>
-              <button
-              className="btn btn-primary btn-sm m-1"
-                onClick={handleJoinTeam}
-                aria-label="Join a group"
-              >
-                Join
-              </button>
-         </div>
-
+            <button className="btn btn-primary btn-sm m-1" onClick={openModal}>
+              Create
+            </button>
+            <button className="btn btn-primary btn-sm m-1" onClick={handleJoinTeam}>
+              Join
+            </button>
           </div>
 
+          {/* Displaying Groups */}
           <div className="col-7 bg-secondary m-3">
-            <h3 className="text-center">Groups</h3>
+            <h3>Groups</h3>
             <div className="d-flex row justify-content-center p-2">
               {groups.map(group => (
-                <Group key={group._id} teamName={group.teamName} desc={group.description} teamId={group._id} />
+                <Group key={group._id} teamName={group.teamName} desc={group.description} teamId={group._id} createdBy={user.id} />
               ))}
             </div>
           </div>
         </div>
 
+        {/* Create Team Modal */}
         <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles}>
-          <h2 className="text-center">Create Group</h2>
-          <form onSubmit={handleCreateTeam} className="p-3">
+          <h2>Create Team</h2>
+          <form onSubmit={handleCreateTeam}>
             <div className="mb-1">
-              <label htmlFor="teamName" className="form-label">Group Name:</label>
+              <label htmlFor="teamName" className="form-label">Team Name:</label>
               <input
                 type="text"
                 id="teamName"
@@ -248,7 +193,21 @@ function Home(props) {
                 id="addImage"
                 accept="image/*"
                 className="form-control"
-                onChange={handleImageChange}  // Ensure this triggers the image upload
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", "your_upload_preset"); // Replace with your preset
+                    fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+                      method: "POST",
+                      body: formData,
+                    })
+                    .then(res => res.json())
+                    .then(data => setAddImage(data.secure_url))
+                    .catch(err => alert("Image upload failed"));
+                  }
+                }}
               />
             </div>
             
@@ -276,7 +235,7 @@ function Home(props) {
             </div>
             
             <div className="d-flex justify-content-between">
-              <button type="submit" className="btn btn-success">Create Group</button>
+              <button type="submit" className="btn btn-success">Create Team</button>
               <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
             </div>
           </form>

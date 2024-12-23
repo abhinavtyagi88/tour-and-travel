@@ -6,8 +6,7 @@ const User = require('../models/user'); // Update with the correct path to your 
 const { check, validationResult } = require('express-validator');
 const authMiddleware = require('../middleware/authMiddleware');
 const cloudinary = require('../config/cloudinary.js')
-
-// const { cloudinary_upload } = require('../config/cloudinary.js');
+const mongoose = require('mongoose');
 
 // JWT secret
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; 
@@ -105,7 +104,46 @@ router.put('/profileImg', async (req, res, next) => {
     }
 });
 
+// Get user profile details (name, image, age, gender)
 
+router.get('/profile/:userId',  async (req, res) => {
+    let { userId } = req.params; // Get userId from request parameters
+
+    // Remove any leading or trailing spaces and unwanted characters (like ":")
+    userId = userId.replace(/^[:]/, '');  // This removes the leading colon if present
+
+    // Ensure userId is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: 'Invalid user ID format' });
+    }
+
+    try {
+        const user = await User.findOne({ _id: userId });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Calculate age
+        const dob = new Date(user.dob);
+        const age = new Date().getFullYear() - dob.getFullYear();
+        const is18Plus = age >= 18 ? '18+' : 'Under 18';
+
+        // Prepare the response data
+        const userData = {
+            name: `${user.firstName} ${user.lastName}`,
+            image: user.img,
+            age: is18Plus,
+            gender: user.gender
+        };
+
+        res.status(200).json({ user: userData });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Error fetching user profile");
+    }
+});
 
 
 // Login route
@@ -141,10 +179,7 @@ router.post('/login', async (req, res) => {
 
 
 
-// Update user details route (Protected)
-router.put('/me', authMiddleware, (req, res) => {
-    res.status(200).json({ message: "Middleware is working!", user: req.user });
-});
+
 
 
 // Export the router

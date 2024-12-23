@@ -85,7 +85,7 @@ const Login = () => {
           {error && <p className="error-message">{error}</p>}  {/* Display error */}
           
           <div className='register-link'>
-            <p>Don't have an account? <a href='#'>Register</a> </p>
+            <p>Don't have an account? <a href='/signup'>Register</a> </p>
           </div>
         </form>
       </div>

@@ -4,9 +4,10 @@ const Team = require('../models/teamModel'); // Import the Team model
 const authMiddleware = require('../middleware/authMiddleware');
 const cloudinary = require('../config/cloudinary.js'); // Remove this if you're not handling image uploads
 const generateUniqueCode = () => Math.random().toString(36).substring(2, 10).toUpperCase();
+const mongoose = require('mongoose');
 
 // Create Team Endpoint
-router.post('/team', authMiddleware, async (req, res) => {
+router.post('/team',  async (req, res) => {
   const { teamName, description,createdBy, Image_url, privacy } = req.body;
   
   // Ensure the user is authenticated and retrieve their userId
@@ -50,6 +51,18 @@ router.post('/team', authMiddleware, async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({ message: `Team creation failed: ${error.message}` });
+  }
+});
+
+router.get('/teams/:id', async (req, res) => {
+  try {
+    const team = await Team.findById(req.params.id); // Get team by ID
+    if (!team) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+    res.json(team); // Send the team data as JSON
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -108,5 +121,39 @@ router.get('/teams', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+// Delete Team Endpoint
+router.delete('/team/:id', async (req, res) => {
+  const teamId = req.params.id; // This may have a "team:" prefix causing the issue
+  const userId = req.body.id;
+ console.log(userId,teamId);
+ 
+  try {
+    // Fix by removing "team:" if it's present
+    const actualTeamId = teamId.replace('team:', ''); // Make sure it's just the ObjectId
+    
+    if (!mongoose.Types.ObjectId.isValid(actualTeamId)) {
+      return res.status(400).json({ message: 'Invalid team ID format' });
+    }
+
+    const team = await Team.findById(actualTeamId);
+    if (!team) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+
+    // if (team.createdBy.toString() !== userId) {
+    //   return res.status(403).json({ message: 'You are not authorized to delete this team' });
+    // }
+
+    await team.deleteOne();
+    res.status(200).json({ message: 'Team deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: `Failed to delete team: ${error.message}` });
+  }
+});
+
+
+
 
 module.exports = router;

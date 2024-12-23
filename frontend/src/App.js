@@ -5,7 +5,9 @@ import Signup from "./sreenPages/Signup";
 import Profile from "./sreenPages/Profile";
 import Location from "./sreenPages/TouristPlaces";
 import Login from "./sreenPages/sign/Login";
+// import TeamDetails from './sreenPages/TeamDetails';
 import "./Navbar.css";
+import TeamDetails from "./components/TeamDetails";
 
 function App() {
   const navigate = useNavigate();
@@ -70,7 +72,7 @@ function App() {
           <div>
             <NavLink to="/" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
               <i className="bx bx-layer nav_logo-icon"></i>
-              <span className="nav_logo-name">BBBootstrap</span>
+              <span className="nav_logo-name">WanderMates</span>
             </NavLink>
             <div className="nav_list">
               <NavLink to="/" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
@@ -115,7 +117,10 @@ function App() {
         <Route path="/locations" element={<Location />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/teams/:teamId" element={<TeamDetails />} />
       </Routes>
+
+
     </>
   );
 }
