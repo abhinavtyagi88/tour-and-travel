@@ -8,6 +8,7 @@ const TouristPlaces = () => {
   useEffect(() => {
     // Fetch data from the API
     const token =localStorage.getItem('token'); 
+    
     const fetchTouristPlaces = async () => {
       try {
           const response = await fetch('http://localhost:4000/api/touristPlace/India', {

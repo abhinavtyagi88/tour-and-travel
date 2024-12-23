@@ -1,4 +1,4 @@
-// // config/cloudinary.js
+
 const {v2} = require('cloudinary');
 
 v2.config({
@@ -9,14 +9,4 @@ v2.config({
 module.exports = { v2 };
 
 
-// const storage = new CloudinaryStorage({
-    // cloudinary: cloudinary,
-    // params: {
-        // folder: 'Wandermates_profile_pics',
-        // allowed_formats: ['jpg', 'jpeg', 'png']
-    // }
-// });
-// 
-// const upload = multer({ storage });
-// 
-// module.exports = { v2, upload };
+

@@ -16,7 +16,7 @@ const Profile = () => {
     if (!preview) return;
   
     try {
-      const res = await axios.put("http://localhost:4000/api/profileImg1", {
+      const res = await axios.put("http://localhost:4000/api/profileImg", {
         userId: user.id,
         image_url: preview,
       });

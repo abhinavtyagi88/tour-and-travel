@@ -67,27 +67,13 @@ router.post('/signup', [
 
 // //upload profile image
 //middleware
-router.post('/profileImg', async (req, res, next) => {
-    try {
-        const { image_url } = req.body;
-        const cloudinary_res = await cloudinary.v2.uploader.upload(image_url, {
-            folder: 'Wandermates_profile_pics',
-            allowed_formats: ['jpg', 'jpeg', 'png']
-        });
 
-        console.log(cloudinary_res);
-      
 
-    } catch (error) {
-        console.error("Error in Cloudinary upload:", error);
-        res.status(500).json({ message: "Error uploading image to Cloudinary" });
-    }
-});
-
-router.put('/profileImg1', async (req, res, next) => {
+router.put('/profileImg', async (req, res, next) => {
     try {
         const {  userId,image_url } = req.body;
-
+        console.log(image_url);
+        
         // Upload image to Cloudinary
         const cloudinary_res = await cloudinary.v2.uploader.upload(image_url, {
             folder: 'Wandermates_profile_pics',
@@ -120,31 +106,6 @@ router.put('/profileImg1', async (req, res, next) => {
 });
 
 
-
-// router.put('/profile-image',  async (req, res) => {
-//     try {
-//         // Check if an image file is uploaded
-//         if (!req.file) {
-//             return res.status(400).json({ error: 'No file uploaded' });
-//         }
-
-//         const userId = req.user.userId;  // Assuming the auth middleware attaches the user's ID to the request
-        // const imgUrl = cloudinary_res.secure_url    // Cloudinary URL of the uploaded image
-
-//         // Update user's profile image in the database
-//         const updatedUser = await User.findByIdAndUpdate(
-//             userId,
-//             { img: imgUrl },
-//             { new: true }  // Returns the updated document
-//         );
-
-//         Send response with the new image URL
-//         res.status(200).json({ message: 'Profile image updated successfully', imgUrl: updatedUser.img });
-//     } catch (error) {
-//         console.error("Error uploading profile image:", error);
-//         res.status(500).json({ error: 'Error updating profile image', details: error.message });
-//     }
-// });
 
 
 // Login route

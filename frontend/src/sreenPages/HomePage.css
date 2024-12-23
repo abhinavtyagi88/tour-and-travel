@@ -22,3 +22,103 @@
 .post-reaction{
     width: 100%;
 }
+
+button{
+    height: 16px;
+    width: 25px;
+}
+
+/* Small and compact buttons */
+.btn-sm {
+    padding: 5px 10px; /* Adjust the padding as needed */
+    font-size: 0.875rem; /* Slightly smaller font */
+    height: 30px; /* Adjust height if needed */
+  }
+  
+  .btn-success {
+    background-color: #28a745; /* Green color for "Create" */
+  }
+  
+  .btn-primary {
+    background-color: #007bff; /* Blue color for "Join" */
+  }
+  /* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+  }
+  
+  /* Container */
+  .container {
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  }
+  
+  /* Buttons */
+  button.btn-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  button.btn-primary:hover {
+    background: #0056b3;
+    color: #ffffff;
+  }
+  
+  /* Groups Section */
+  .bg-secondary {
+    background: #e9ecef;
+    border-radius: 8px;
+  }
+  
+  .card {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-body {
+    padding: 15px;
+  }
+  
+  /* Modal */
+  .ReactModal__Content {
+    border-radius: 10px;
+    background: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .ReactModal__Content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .ReactModal__Content button {
+    margin: 10px 5px;
+  }
+  
+  /* Input Fields */
+  input, textarea, select {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+  }
+  
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  

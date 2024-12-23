@@ -2,69 +2,75 @@ const express = require('express');
 const router = express.Router();
 const Team = require('../models/teamModel'); // Import the Team model
 const authMiddleware = require('../middleware/authMiddleware');
-
-
-// Function to generate a unique 8-digit code
-const generateUniqueCode = () => {
-  return Math.random().toString(36).substring(2, 10).toUpperCase(); // Generate an 8-digit code
-};
+const cloudinary = require('../config/cloudinary.js'); // Remove this if you're not handling image uploads
+const generateUniqueCode = () => Math.random().toString(36).substring(2, 10).toUpperCase();
 
 // Create Team Endpoint
-router.post('/team', async (req, res) => {
-  const { teamName, description, createdBy, privacy } = req.body;
+router.post('/team', authMiddleware, async (req, res) => {
+  const { teamName, description,createdBy, Image_url, privacy } = req.body;
+  
+  // Ensure the user is authenticated and retrieve their userId
 
   try {
+    // Generate a unique join code
     let joinCode = generateUniqueCode();
-
-    // Ensure the join code is unique
-    let codeExists = await Team.findOne({ joinCode });
-    while (codeExists) {
+    while (await Team.findOne({ joinCode })) {
       joinCode = generateUniqueCode();
-      codeExists = await Team.findOne({ joinCode });
     }
 
+    // Optionally, skip image upload if you're not using it
+    let cloudinary_res;
+    if (Image_url) {
+      try {
+        cloudinary_res = await cloudinary.v2.uploader.upload(Image_url, {
+          folder: 'Wandermates_profile_pics',
+          allowed_formats: ['jpg', 'jpeg', 'png']
+        });
+      } catch (uploadError) {
+        return res.status(500).json({ message: "Image upload failed", error: uploadError });
+      }
+    }
+   console.log(cloudinary_res);
+   
     const newTeam = new Team({
       teamName,
       description,
-      createdBy,
+      Image: cloudinary_res ? cloudinary_res.secure_url : null, // If image is uploaded, use the secure URL
+      createdBy, // Use the authenticated user's ID
       privacy,
-      joinCode // Store the unique join code
+      joinCode,
     });
 
     await newTeam.save();
-    
-    // Return the created team with the join code
+
     res.status(201).json({
       team: newTeam,
-      joinCode: newTeam.joinCode, // Include the join code in the response
-      user: req.user 
+      joinCode: newTeam.joinCode,
+      user: req.user // Send user information in the response
     });
   } catch (error) {
-    res.status(400).json({ message: error.message }); // Handle errors
+    res.status(400).json({ message: `Team creation failed: ${error.message}` });
   }
 });
 
-
 // Join Team Endpoint
-router.post('/teams/join', async (req, res) => {
-  const { userId, joinCode, teamId } = req.body; // Accept teamId for joining public teams
+router.post('/teams/join', authMiddleware, async (req, res) => {
+  const { userId, joinCode, teamId } = req.body;
 
   try {
     let team;
 
+    // Find the team based on the join code or team ID
     if (joinCode) {
-      // Find the team by join code if provided
       team = await Team.findOne({ joinCode });
       if (!team) {
         return res.status(404).json({ message: 'Team not found with the provided join code' });
       }
     } else if (teamId) {
-      // Find the team by ID if no join code is provided
       team = await Team.findById(teamId);
       if (!team) {
         return res.status(404).json({ message: 'Team not found with the provided team ID' });
       }
-      // Ensure the team is public if joining without a join code
       if (team.privacy !== 'public') {
         return res.status(403).json({ message: 'Cannot join private team without a join code' });
       }
@@ -72,32 +78,35 @@ router.post('/teams/join', async (req, res) => {
       return res.status(400).json({ message: 'Join code or team ID is required' });
     }
 
-    // Check if the user is already a member
-    const memberExists = team.members.some(member => member.userId.toString() === userId);
-    if (memberExists) {
+    // Ensure the user is not the team creator
+    if (team.createdBy.toString() === userId) {
+      return res.status(400).json({ message: 'You cannot join your own team' });
+    }
+
+    // Check if the user is already a member of the team
+    const isAlreadyMember = team.members.some(member => member.userId.toString() === userId);
+    if (isAlreadyMember) {
       return res.status(400).json({ message: 'You have already joined this team' });
     }
 
-    // Add user to team members
+    // Add the user to the team
     team.members.push({ userId });
     await team.save();
 
-    res.status(200).json(team); // Return the updated team
+    res.status(200).json(team);
   } catch (error) {
-    res.status(400).json({ message: error.message }); // Handle errors
+    res.status(400).json({ message: error.message });
   }
 });
-
 
 // Get All Public Teams Endpoint
 router.get('/teams', async (req, res) => {
   try {
-    const publicTeams = await Team.find({ privacy: 'public' }); // Retrieve only public teams
-    res.status(200).json(publicTeams); // Send the public teams as a JSON response
+    const publicTeams = await Team.find({ privacy: 'public' });
+    res.status(200).json(publicTeams);
   } catch (error) {
-    res.status(500).json({ message: error.message }); // Handle errors
+    res.status(500).json({ message: error.message });
   }
 });
-
 
 module.exports = router;

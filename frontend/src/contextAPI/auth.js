@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", serverToken);
     
     localStorage.setItem("user", JSON.stringify(userInstance));
-};
+  };
 
 
   return (

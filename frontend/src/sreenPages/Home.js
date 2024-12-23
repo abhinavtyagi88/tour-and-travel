@@ -1,10 +1,8 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Modal from 'react-modal';
 import "./Home.css";
 import Group from "../components/Group";
 
-
-// Custom modal styles
 const customStyles = {
   content: {
     top: '50%',
@@ -13,27 +11,40 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    width: '40%',          // Adjust width as needed
-    height: '53vh',      // Set a specific height
-    overflow: 'hidden',    // Prevent scrollbars
+    width: '40%',
+    height: '60vh',
+    overflow: 'hidden',
   },
 };
 
-Modal.setAppElement('#root');  // Update this according to your root element ID
+Modal.setAppElement('#root');  // Adjust to your root element ID
 
 function Home(props) {
+
+  const getUserFromLS = () => {
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    
+    try {
+      return user ? JSON.parse(user) : {};
+    } catch (error) {
+      console.error("Invalid user data in localStorage:", error);
+      return {};
+    }
+  };
+
   const green = "#28a745";
 
-  console.log(props);
-  
-  
-  const [modalIsOpen, setIsOpen] = useState(false);  // Modal state
-  const [teamName, setTeamName] = useState('');  // State for team name
-  const [teamDescription, setTeamDescription] = useState('');  // State for team description
-  const [teamId, setTeamId] = useState('');  // State for joining team by ID
-  const [privacy, setPrivacy] = useState('public');  // Privacy setting for the team
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [teamName, setTeamName] = useState('');
+  const [teamDescription, setTeamDescription] = useState('');
+  const [addImage, setAddImage] = useState('');
+  const [joinCode, setJoinCode] = useState('');
+  const [privacy, setPrivacy] = useState('public');
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Open and close modal
   function openModal() {
     setIsOpen(true);
   }
@@ -42,19 +53,43 @@ function Home(props) {
     setIsOpen(false);
   }
 
+  // Handle image change and upload to Cloudinary
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "your_upload_preset");  // Replace with your Cloudinary preset
+
+      try {
+        const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        setAddImage(data.secure_url); // Store the secure URL for API request
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Image upload failed.");
+      }
+    }
+  };
+
   // Handle create team form submission
   const handleCreateTeam = async (e) => {
-    e.preventDefault();  // Prevent page reload
+    e.preventDefault();
+    const token = localStorage.getItem("token");  // Ensure token is fetched
     try {
-      
       const response = await fetch('http://localhost:4000/api/team', {
         method: 'POST',
-        headers: {
+        headers: { 
           'Content-Type': 'application/json',
+          'Authorization': token  
         },
         body: JSON.stringify({
           teamName,
           description: teamDescription,
+          image_url: addImage,  // Send the image URL to backend
           createdBy: props.id,  // Replace with actual user ID
           privacy,
         }),
@@ -62,221 +97,191 @@ function Home(props) {
 
       const result = await response.json();
       if (response.status === 201) {
-        alert(`Team created successfully! Join code: ${result.joinCode}`); // Display the join code
-        console.log(result); // Log response for debugging
+        alert(`Team created successfully! Join code: ${result.joinCode}`);
+        console.log(result);
       } else {
         alert('Failed to create team: ' + result.message);
       }
 
-      // Close modal and reset form
       setIsOpen(false);
       setTeamName('');
       setTeamDescription('');
+      setAddImage('');
     } catch (error) {
       console.error('Error creating team:', error);
       alert('An error occurred while creating the team.');
     }
   };
 
-  // Handle Join button functionality
-  // Handle Join button functionality
-const handleJoinTeam = async () => {
-  try {
-    const response = await fetch(`http://localhost:4000/api/teams/join`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: props.id,  // Replace with actual user ID
-        joinCode: teamId, // Use join code instead of team ID
-      }),
-    });
-
-    console.log(props.id || " not defined");
-    
-    const result = await response.json();
-    if (response.status === 200) {
-      alert(`Successfully joined team!`);
-      console.log(result); // Log response for debugging
-    } else {
-      alert('Failed to join team: ' + result.message);
-    }
-  } catch (error) {
-    console.error('Error joining team:', error);
-    alert('An error occurred while trying to join the team.');
-  }
-};
-
-//shuffleArray
-const shuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
-const [groups, setGroups] = useState([]); // Changed `Group` to `groups`
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-
-useEffect(() => {
-  // Fetch data from the API
-  const fetchTouristGroups = async () => {
+  // Handle join team functionality
+  const handleJoinTeam = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const response = await fetch('http://localhost:4000/api/teams');
-      if (!response.ok) {
-        throw new Error('Failed to fetch');
+      const response = await fetch('http://localhost:4000/api/teams/join', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({
+          userId: props.id,  // Replace with actual user ID
+          joinCode, // Use joinCode directly
+        }),
+      });
+
+      const result = await response.json();
+      if (response.status === 200) {
+        alert(`Successfully joined team!`);
+        console.log(result);
+      } else {
+        alert('Failed to join team: ' + result.message);
       }
-      const data = await response.json();
-      
-      console.log(data);
-      setGroups(shuffleArray(data)); // Set the fetched groups
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false); // Set loading to false once done
+    } catch (error) {
+      console.error('Error joining team:', error);
+      alert('An error occurred while trying to join the team.');
     }
   };
 
-  fetchTouristGroups();
-}, [localStorage]);
+  // Shuffle groups array
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
-// Render loading state
-if (loading) {
-  return <div>Loading...</div>;
-}
+  useEffect(() => {
+    const fetchTouristGroups = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/api/teams');
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+        const data = await response.json();
+        setGroups(shuffleArray(data)); // Shuffle and set fetched groups
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-// Render error state
-if (error) {
-  return <div>Error: {error}</div>;
-}
+    fetchTouristGroups();
+  }, []); // Fetch data only once on mount
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <>
-      
-      <div className="container" style={{width:"85vw",height:"90vh"
-      }}>
-      <div className="row flex justify-content-between">
-        
-        <div
-          className="col-4 m-2 d-grid  bg-secondary rounded-2"
-          style={{ height: "44vh" }}
-        >
-          <div className="row m-1 d-flex justify-content-between rounded-2">
-            {/* Create Button */}
-           
-
-            {/* Join Button */}
-            
-          </div>
-          <br />
-          <input
-            type="text"
-            name="TeamId"
-            className="row rounded-2 m-2"
-            placeholder="Enter Team ID"
-            style={{ width: "22vw" }}
-            value={teamId}
-            onChange={(e) => setTeamId(e.target.value)}  // Set the team ID for joining
-          />
-          <br />
-          <div className="row m-1  rounded-2">
+      <div className="container" style={{ width: "85vw", height: "90vh" }}>
+        <div className="row flex justify-content-between">
           <div
-              className="col m-1  btn rounded-2" 
-              style={{ backgroundColor: green }}
-              onClick={openModal}  // Open modal on click
-            >
-              Create
-            </div>
-            <div
-              className="col m-1 btn rounded-2"
-              style={{ backgroundColor: green }}
-              onClick={handleJoinTeam}  // Call join function on click
-            >
-              Join
-            </div>
-          </div>
-          <br />
-          <div
-            className="row btn rounded-2 w-25 m-2"
-            style={{ backgroundColor: green }}
+            className="col-4 m-2 d-grid bg-secondary rounded-2"
+            style={{ height: "44vh" }}
           >
-            Search
+            <br />
+            <input
+              type="text"
+              name="JoinCode"
+              className="row rounded-2 m-2"
+              placeholder="Enter Join Code"
+              style={{ width: "22vw" }}
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value)}  // Set the join code for joining
+            />
+            <br />
+            <div className="row m-1 rounded-2">
+              <button
+              className="btn btn-primary btn-sm m-1"
+                onClick={openModal}
+                aria-label="Create a new group"
+              >
+                Create
+              </button>
+              <button
+              className="btn btn-primary btn-sm m-1"
+                onClick={handleJoinTeam}
+                aria-label="Join a group"
+              >
+                Join
+              </button>
+         </div>
+
+          </div>
+
+          <div className="col-7 bg-secondary m-3">
+            <h3 className="text-center">Groups</h3>
+            <div className="d-flex row justify-content-center p-2">
+              {groups.map(group => (
+                <Group key={group._id} teamName={group.teamName} desc={group.description} teamId={group._id} />
+              ))}
+            </div>
           </div>
         </div>
-        
-        <div
-          className="col-7 bg-secondary m-3"
-          // style={{ height: "35vh" }}
-        >
-          <h3 className="text-center">Groups</h3>
-          <div className="d-flex row justify-content-center p-2">
-             {/* <Group/>
-             <Group/> */}
 
-           {  groups.map(group => (
-          <Group key={group._id} teamName={group.teamName} desc = {group.description} teamId ={group._id}></Group>
-        ))}
+        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles}>
+          <h2 className="text-center">Create Group</h2>
+          <form onSubmit={handleCreateTeam} className="p-3">
+            <div className="mb-1">
+              <label htmlFor="teamName" className="form-label">Group Name:</label>
+              <input
+                type="text"
+                id="teamName"
+                className="form-control"
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                required
+              />
+            </div>
 
-          </div>
-
-          
-        </div>
+            <div className="mb-1">
+              <label htmlFor="addImage" className="form-label">Add Image:</label>
+              <input
+                type="file"
+                id="addImage"
+                accept="image/*"
+                className="form-control"
+                onChange={handleImageChange}  // Ensure this triggers the image upload
+              />
+            </div>
+            
+            <div className="mb-3">
+              <label htmlFor="teamDescription" className="form-label">Description:</label>
+              <textarea
+                id="teamDescription"
+                className="form-control"
+                value={teamDescription}
+                onChange={(e) => setTeamDescription(e.target.value)}
+              />
+            </div>
+            
+            <div className="mb-3">
+              <label htmlFor="privacy" className="form-label">Privacy:</label>
+              <select
+                id="privacy"
+                className="form-select"
+                value={privacy}
+                onChange={(e) => setPrivacy(e.target.value)}
+              >
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </select>
+            </div>
+            
+            <div className="d-flex justify-content-between">
+              <button type="submit" className="btn btn-success">Create Group</button>
+              <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
       </div>
-
-      {/* Modal for Creating Teams */}
-      <Modal
-  isOpen={modalIsOpen}
-  onRequestClose={closeModal}
-  style={customStyles}
->
-  <h2 className="text-center">Create Group</h2>
-  <form onSubmit={handleCreateTeam} className="p-3">  
-    <div className="mb-3">
-      <label htmlFor="teamName" className="form-label">Group Name:</label>
-      <input
-        type="text"
-        id="teamName"
-        className="form-control"
-        value={teamName}
-        onChange={(e) => setTeamName(e.target.value)} // Set team name
-        required
-      />
-    </div>
-    
-    <div className="mb-3">
-      <label htmlFor="teamDescription" className="form-label">Description:</label>
-      <textarea
-        id="teamDescription"
-        className="form-control"
-        value={teamDescription}
-        onChange={(e) => setTeamDescription(e.target.value)} // Set team description
-      />
-    </div>
-    
-    <div className="mb-3">
-      <label htmlFor="privacy" className="form-label">Privacy:</label>
-      <select
-        id="privacy"
-        className="form-select"
-        value={privacy}
-        onChange={(e) => setPrivacy(e.target.value)} // Set privacy
-      >
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-      </select>
-    </div>
-    
-    <div className="d-flex justify-content-between">
-      <button type="submit" className="btn btn-success">Create Group</button>
-      <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
-    </div>
-  </form>
-</Modal>
-</div>
     </>
   );
 }

@@ -1,27 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
-import Home from './sreenPages/Home';
-import Signup from './sreenPages/Signup';
-import Profile from './sreenPages/Profile';
-import Location from './sreenPages/TouristPlaces';
-import Login from './sreenPages/sign/Login';
-import './Navbar.css'; // Import your CSS file for Navbar styles
+import Home from "./sreenPages/Home";
+import Signup from "./sreenPages/Signup";
+import Profile from "./sreenPages/Profile";
+import Location from "./sreenPages/TouristPlaces";
+import Login from "./sreenPages/sign/Login";
+import "./Navbar.css";
 
 function App() {
   const navigate = useNavigate();
 
   const getUserFromLS = () => {
     const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : {};
+    
+    try {
+      return user ? JSON.parse(user) : {};
+    } catch (error) {
+      console.error("Invalid user data in localStorage:", error);
+      return {};
+    }
   };
+  
 
   const [user, setUser] = useState(getUserFromLS());
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+
+  useEffect(() => {
+    const storedUser = getUserFromLS();
+    const token = localStorage.getItem("token");
+    setUser(storedUser);
+    setIsAuthenticated(!!token);
+  }, []);
 
   const signOut = () => {
-    localStorage.removeItem('token');  // Remove token from localStorage
-    localStorage.removeItem('user'); 
-    setUser({}); // Clear user state
-    navigate('/login');  // Redirect to login page
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser({});
+    setIsAuthenticated(false);
+    navigate("/login");
   };
 
   return (
@@ -39,9 +55,12 @@ function App() {
           <button className="btn text-white bg-danger">X</button>
         </div>
         <div className="header_img">
-          <img 
-            src={user.img || "https://previews.123rf.com/images/kritchanut/kritchanut1407/kritchanut140700335/29898193-male-avatar-profile-picture-vector-icon.jpg"} 
-            alt="profile" 
+          <img
+            src={
+              user.img ||
+              "https://previews.123rf.com/images/kritchanut/kritchanut1407/kritchanut140700335/29898193-male-avatar-profile-picture-vector-icon.jpg"
+            }
+            alt="profile"
           />
         </div>
       </div>
@@ -66,8 +85,7 @@ function App() {
                 <i className="bx bx-message-square-detail nav_icon"></i>
                 <span className="nav_name">Profile</span>
               </NavLink>
-              
-              {!localStorage.getItem('token') && (
+              {!isAuthenticated && (
                 <>
                   <NavLink to="/signup" className={({ isActive }) => (isActive ? "nav_link active" : "nav_link")}>
                     <i className="bx bx-bookmark nav_icon"></i>
@@ -81,10 +99,10 @@ function App() {
               )}
             </div>
           </div>
-          {localStorage.getItem('token') && (
+          {isAuthenticated && (
             <div className="nav_link" onClick={signOut}>
               <i className="bx bx-log-out nav_icon"></i>
-              <span className="nav_name">SignOut</span>
+              <span className="nav_name">Sign Out</span>
             </div>
           )}
         </nav>
@@ -92,7 +110,7 @@ function App() {
 
       {/* Routes */}
       <Routes>
-        <Route path="/" element={<Home id = {user.id} />} />
+        <Route path="/" element={<Home id={user.id} />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/locations" element={<Location />} />
         <Route path="/signup" element={<Signup />} />
